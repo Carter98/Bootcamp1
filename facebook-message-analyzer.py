@@ -52,12 +52,12 @@ invalid_message_count = 0
 # In[9]:
 
 
-print('Analyzing ' + str(min(NUMBER_TO_ANALYZE, len(chats))) + ' chats...')
+#print('Analyzing ' + str(min(NUMBER_TO_ANALYZE, len(chats))) + ' chats...')
 
 for chat in chats:
     url = chat + '/message_1.json'
     json_data = get_json_data(chat)
-    print(chat)
+    #print(chat)
     if json_data != None:
         messages = json_data["messages"]
         if len(messages) >= MESSAGE_THRESHOLD and len(messages) <= MESSAGE_BOUND:
@@ -66,7 +66,7 @@ for chat in chats:
 
 sorted_chats.sort(reverse=True)
 
-print('Finished processing chats...')
+#print('Finished processing chats...')
 
 
 # In[10]:
@@ -77,7 +77,7 @@ for i, (messages, chat, messages) in enumerate(sorted_chats):
     person_to_times = {}
     number_words = {}
 
-    print(str(i) + " - " + str(len(messages)) + " messages - " + str(chat))
+    #print(str(i) + " - " + str(len(messages)) + " messages - " + str(chat))
 
     for message in messages:
         try:
@@ -101,8 +101,8 @@ for i, (messages, chat, messages) in enumerate(sorted_chats):
     final_data_times[i] = person_to_times
     final_data_words[i] = number_words
 
-print('Found ' + str(invalid_message_count) + ' invalid messages...')
-print('Found ' + str(len(sorted_chats)) + ' chats with ' + str(MESSAGE_THRESHOLD) + ' messages or more')
+#print('Found ' + str(invalid_message_count) + ' invalid messages...')
+#print('Found ' + str(len(sorted_chats)) + ' chats with ' + str(MESSAGE_THRESHOLD) + ' messages or more')
 
 
 # In[12]:
@@ -152,4 +152,50 @@ def plot(chat_number):
 # In[ ]:
 
 
-plot(2)
+#plot(2)
+
+message_count = 0
+file_name = "error"
+
+for chat in chats:
+     url = chat + '/message_1.json'
+     json_data = get_json_data(chat)
+     if json_data != None:
+         messages = json_data["messages"]
+         my_responses = 0
+         for message in messages:
+             if message['sender_name'] == "Carter Hartmann":
+                my_responses +=1
+                convo = json_data["participants"]
+         if my_responses > message_count:
+            file_name = str(convo)
+            message_count = my_responses
+print(file_name)
+
+ttr = []
+for chat in chats:
+    url = chat + '/message_1.json'
+    json_data = get_json_data(chat)
+    if json_data != None:
+        messages = json_data["messages"]
+
+        nur = 0
+        last_response = 0
+        multi_lockout = False
+        found_a_name = False
+
+        for message in messages:
+            if message['sender_name'] == "Carter Hartmann":
+                found_a_name = True
+                multi_lockout = True
+                last_response = message['timestamp_ms']
+            else:
+                if found_a_name:
+                    if multi_lockout:
+                        multi_lockout = False
+                        ttr.append(last_response - message["timestamp_ms"])
+holder = 0
+for number in ttr:
+    holder += number
+holder = holder / len(ttr)
+print(str(holder/1000/60/60) + " hours")
