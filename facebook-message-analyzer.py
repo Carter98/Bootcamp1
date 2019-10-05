@@ -4,9 +4,9 @@
 # # Facebook Message Analyzer
 
 # <b> Current Features For a Given Chat: </b>
-# <ul> 
-#     <li> Number of Messages Sent </li> 
-#     <li> Messages Sent Over Time </li> 
+# <ul>
+#     <li> Number of Messages Sent </li>
+#     <li> Messages Sent Over Time </li>
 #     <li> Average Word Count </li>
 # </ul>
 
@@ -30,7 +30,7 @@ MESSAGE_BOUND = 1000
 
 def get_json_data(chat):
     try:
-        json_location = CURRENT_DIRECTORY + "/messages/" + chat + "/message.json"
+        json_location = CURRENT_DIRECTORY + "/messages/" + chat + "/message_1.json"
         with open(json_location) as json_file:
             json_data = json.load(json_file)
             return json_data
@@ -55,13 +55,14 @@ invalid_message_count = 0
 print('Analyzing ' + str(min(NUMBER_TO_ANALYZE, len(chats))) + ' chats...')
 
 for chat in chats:
-    url = chat + '/message.json'
+    url = chat + '/message_1.json'
     json_data = get_json_data(chat)
     print(chat)
     if json_data != None:
         messages = json_data["messages"]
         if len(messages) >= MESSAGE_THRESHOLD and len(messages) <= MESSAGE_BOUND:
             sorted_chats.append((len(messages), chat, messages))
+
 
 sorted_chats.sort(reverse=True)
 
@@ -115,7 +116,7 @@ def plot_num_messages(chat_number):
     pl.title('Number of Messages Sent')
     pl.tight_layout()
     pl.show()
-    
+
 def plot_histogram_time(chat_number):
     person_to_times = final_data_times[chat_number]
     pl.xlabel('Time')
@@ -141,7 +142,7 @@ def plot_histogram_words(chat_number):
     pl.title('Average Word Count')
     pl.tight_layout()
     pl.show()
-    
+
 def plot(chat_number):
     plot_num_messages(chat_number)
     plot_histogram_time(chat_number)
@@ -151,5 +152,4 @@ def plot(chat_number):
 # In[ ]:
 
 
-plot(0)
-
+plot(2)
